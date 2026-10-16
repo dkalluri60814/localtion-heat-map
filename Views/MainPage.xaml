@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:LocationHeatMap.Controls"
+             xmlns:vm="clr-namespace:LocationHeatMap.ViewModels"
+             x:Class="LocationHeatMap.Views.MainPage"
+             x:DataType="vm:MainViewModel"
+             Title="Paris Heat Trail"
+             BackgroundColor="#0B1F2A"
+             NavigationPage.HasNavigationBar="False">
+
+    <ContentPage.Resources>
+        <!-- Colours used by the floating UI. -->
+        <Color x:Key="PanelColor">#E60B1F2A</Color>
+        <Color x:Key="AccentColor">#14B8A6</Color>
+        <Color x:Key="InactiveColor">#33475B</Color>
+
+        <!-- Shared look of the round toolbar buttons. -->
+        <Style x:Key="PillButton" TargetType="Button">
+            <Setter Property="BackgroundColor" Value="{StaticResource InactiveColor}" />
+            <Setter Property="TextColor" Value="White" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="CornerRadius" Value="22" />
+            <Setter Property="HeightRequest" Value="44" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="MinimumWidthRequest" Value="0" />
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid>
+        <!-- The map. HeatMap derives from the MAUI Map and draws the heat layer on top of it. -->
+        <controls:HeatMap x:Name="HeatMapView"
+                          MapType="Street"
+                          IsZoomEnabled="True"
+                          IsScrollEnabled="True"
+                          IsShowingUser="{Binding IsTracking}"
+                          HeatPoints="{Binding Points}"
+                          IsHeatVisible="{Binding IsHeatVisible}"
+                          ArePointsVisible="{Binding ArePointsVisible}" />
+
+        <!-- Title / status card -->
+        <Border VerticalOptions="Start" Margin="16,48,16,0" Padding="16,12"
+                BackgroundColor="{StaticResource PanelColor}" StrokeThickness="0">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="18" />
+            </Border.StrokeShape>
+            <VerticalStackLayout Spacing="2">
+                <Label Text="Paris Heat Trail" TextColor="White" FontSize="20" FontAttributes="Bold" />
+                <Label Text="{Binding StatusText}" TextColor="#9FB3C8" FontSize="13" />
+            </VerticalStackLayout>
+        </Border>
+
+        <!-- Legend + toolbar -->
+        <VerticalStackLayout VerticalOptions="End" Margin="16,0,16,28" Spacing="10">
+
+            <Border Padding="16,10" BackgroundColor="{StaticResource PanelColor}" StrokeThickness="0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="16" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="6">
+                    <!-- Colour ramp identical to HeatMap.GradientColor -->
+                    <BoxView HeightRequest="10" CornerRadius="5">
+                        <BoxView.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                <GradientStop Color="#2563EB" Offset="0.0" />
+                                <GradientStop Color="#06B6D4" Offset="0.25" />
+                                <GradientStop Color="#22C55E" Offset="0.5" />
+                                <GradientStop Color="#FACC15" Offset="0.75" />
+                                <GradientStop Color="#EF4444" Offset="1.0" />
+                            </LinearGradientBrush>
+                        </BoxView.Background>
+                    </BoxView>
+                    <Grid ColumnDefinitions="*,*">
+                        <Label Text="Rarely visited" TextColor="#9FB3C8" FontSize="11" />
+                        <Label Grid.Column="1" Text="Visited often" TextColor="#9FB3C8" FontSize="11"
+                               HorizontalTextAlignment="End" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <Grid ColumnDefinitions="1.5*,*,*,*,*" ColumnSpacing="8">
+                <Button Text="{Binding TrackingButtonText}"
+                        Command="{Binding ToggleTrackingCommand}"
+                        Style="{StaticResource PillButton}"
+                        BackgroundColor="{StaticResource AccentColor}">
+                    <Button.Triggers>
+                        <!-- Red while recording -->
+                        <DataTrigger TargetType="Button" Binding="{Binding IsTracking}" Value="True">
+                            <Setter Property="BackgroundColor" Value="#EF4444" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
+
+                <Button Grid.Column="1" Text="Heat"
+                        Command="{Binding ToggleHeatCommand}"
+                        Style="{StaticResource PillButton}">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding IsHeatVisible}" Value="True">
+                            <Setter Property="BackgroundColor" Value="{StaticResource AccentColor}" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
+
+                <Button Grid.Column="2" Text="Dots"
+                        Command="{Binding TogglePointsCommand}"
+                        Style="{StaticResource PillButton}">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding ArePointsVisible}" Value="True">
+                            <Setter Property="BackgroundColor" Value="{StaticResource AccentColor}" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
+
+                <Button Grid.Column="3" Text="Sample"
+                        Command="{Binding LoadSampleDataCommand}"
+                        Style="{StaticResource PillButton}" />
+
+                <Button Grid.Column="4" Text="Clear"
+                        Command="{Binding ClearCommand}"
+                        Style="{StaticResource PillButton}" />
+            </Grid>
+        </VerticalStackLayout>
+
+        <!-- Spinner while the database is being (re)filled -->
+        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                           Color="{StaticResource AccentColor}"
+                           HorizontalOptions="Center" VerticalOptions="Center" />
+    </Grid>
+</ContentPage>

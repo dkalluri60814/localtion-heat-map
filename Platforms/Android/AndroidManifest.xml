@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+	<application android:allowBackup="true"
+	             android:icon="@mipmap/appicon"
+	             android:roundIcon="@mipmap/appicon_round"
+	             android:supportsRtl="true">
+
+		<!--
+		  Google Maps SDK key. The MAUI Map control uses Google Maps on Android, which needs an API key
+		  with "Maps SDK for Android" enabled (https://console.cloud.google.com/google/maps-apis).
+		  Replace the placeholder below with your own key. Without a valid key the map tiles stay blank
+		  (the heat layer and pins are still drawn).
+		-->
+		<meta-data android:name="com.google.android.geo.API_KEY" android:value="YOUR_GOOGLE_MAPS_API_KEY" />
+
+		<!-- Required by the Google Maps SDK on Android 9 (API 28) and above. -->
+		<uses-library android:name="org.apache.http.legacy" android:required="false" />
+	</application>
+
+	<!-- Permissions -->
+	<!-- Maps tiles are downloaded from the network. -->
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<!-- Location tracking (foreground use only). -->
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+	<!-- The app still works on devices without GPS (e.g. tablets): it can display the stored data. -->
+	<uses-feature android:name="android.hardware.location.gps" android:required="false" />
+</manifest>
