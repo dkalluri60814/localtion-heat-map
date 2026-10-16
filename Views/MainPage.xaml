@@ -28,9 +28,10 @@
         </Style>
     </ContentPage.Resources>
 
-    <Grid>
+    <Grid RowDefinitions="*,Auto">
         <!-- The map. HeatMap derives from the MAUI Map and draws the heat layer on top of it. -->
         <controls:HeatMap x:Name="HeatMapView"
+                          Grid.Row="0"
                           MapType="Street"
                           IsZoomEnabled="True"
                           IsScrollEnabled="True"
@@ -40,7 +41,7 @@
                           ArePointsVisible="{Binding ArePointsVisible}" />
 
         <!-- Title / status card -->
-        <Border VerticalOptions="Start" Margin="16,48,16,0" Padding="16,12"
+        <Border Grid.Row="0" VerticalOptions="Start" Margin="16,16,16,0" Padding="16,12"
                 BackgroundColor="{StaticResource PanelColor}" StrokeThickness="0">
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="18" />
@@ -52,12 +53,10 @@
         </Border>
 
         <!-- Legend + toolbar -->
-        <VerticalStackLayout VerticalOptions="End" Margin="16,0,16,28" Spacing="10">
+        <VerticalStackLayout Grid.Row="1" BackgroundColor="#0B1F2A" Padding="16,14,16,28" Spacing="12">
 
-            <Border Padding="16,10" BackgroundColor="{StaticResource PanelColor}" StrokeThickness="0">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="16" />
-                </Border.StrokeShape>
+            <!-- The map has its own row, so Google's zoom buttons never sit under the toolbar. -->
+            <Border Padding="0" BackgroundColor="Transparent" StrokeThickness="0">
                 <VerticalStackLayout Spacing="6">
                     <!-- Colour ramp identical to HeatMap.GradientColor -->
                     <BoxView HeightRequest="10" CornerRadius="5">
@@ -123,7 +122,7 @@
         </VerticalStackLayout>
 
         <!-- Spinner while the database is being (re)filled -->
-        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+        <ActivityIndicator Grid.Row="0" IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
                            Color="{StaticResource AccentColor}"
                            HorizontalOptions="Center" VerticalOptions="Center" />
     </Grid>
